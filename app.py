@@ -3,6 +3,10 @@ FastAPI RAG Application - Streamlit UI
 Professional chat interface for querying FastAPI documentation.
 """
 
+import warnings
+
+warnings.filterwarnings("ignore", message=".*create_react_agent.*deprecated.*")
+
 import streamlit as st
 from langchain_ollama import ChatOllama
 from langgraph.prebuilt import create_react_agent
