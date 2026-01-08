@@ -31,9 +31,14 @@ def get_config(key: str, default: str = None) -> str:
 PINECONE_API_KEY = get_config("PINECONE_API_KEY")
 PINECONE_INDEX = get_config("PINECONE_INDEX", "fastapi-rag")
 
+# Ollama Configuration (for cloud deployment)
+OLLAMA_API_KEY = get_config("OLLAMA_API_KEY")
+OLLAMA_BASE_URL = get_config("OLLAMA_BASE_URL", "http://localhost:11434")
+
 # Model Configuration
 LLM_MODEL = get_config("LLM_MODEL", "gpt-oss:20b-cloud")
 EMBEDDING_MODEL = "llama-text-embed-v2"  # Pinecone's inference embedding model
+EVAL_EMBEDDING_MODEL = get_config("EVAL_EMBEDDING_MODEL", "mxbai-embed-large:latest")
 
 # RAG Configuration
 CHUNK_SIZE = 600
