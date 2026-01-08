@@ -3,13 +3,9 @@ FastAPI RAG Application - Streamlit UI
 Professional chat interface for querying FastAPI documentation.
 """
 
-import warnings
-
-warnings.filterwarnings("ignore", message=".*create_react_agent.*deprecated.*")
-
 import streamlit as st
 from langchain_ollama import ChatOllama
-from langgraph.prebuilt import create_react_agent
+from langchain.agents import create_agent
 from retriever import retrieve_context, search_documents
 from config import LLM_MODEL, SYSTEM_PROMPT
 
@@ -85,7 +81,7 @@ if "evaluation_results" not in st.session_state:
 def get_agent():
     """Initialize and cache the RAG agent."""
     llm = ChatOllama(model=LLM_MODEL)
-    return create_react_agent(llm, [retrieve_context], prompt=SYSTEM_PROMPT)
+    return create_agent(llm, [retrieve_context], system_prompt=SYSTEM_PROMPT)
 
 
 agent = get_agent()
