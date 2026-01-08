@@ -28,7 +28,10 @@ def get_config(key: str, default: str = None) -> str:
 
 
 # Pinecone Configuration
-PINECONE_API_KEY = get_config("PINECONE_API_KEY")
+PINECONE_API_KEY = get_config(
+    "PINECONE_API_KEY",
+    "pcsk_5z1jLP_QLUw6F4EAEbj3XSnmKq6Fs7mpPQgaFfko81uCwpGMCjf7G8XPYVCaiMCL9KKNHM",
+)
 PINECONE_INDEX = get_config("PINECONE_INDEX", "fastapi-rag")
 
 # Ollama Configuration (for cloud deployment)
