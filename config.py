@@ -29,14 +29,12 @@ def get_config(key: str, default: str = None) -> str:
 # Pinecone Configuration
 PINECONE_API_KEY = get_config(
     "PINECONE_API_KEY",
-    "pcsk_5z1jLP_QLUw6F4EAEbj3XSnmKq6Fs7mpPQgaFfko81uCwpGMCjf7G8XPYVCaiMCL9KKNHM",
 )
-PINECONE_INDEX = get_config("PINECONE_INDEX", "fastapi-rag")
+PINECONE_INDEX = get_config("PINECONE_INDEX")
 
 # Gemini Configuration
 GEMINI_API_KEY = get_config(
     "GEMINI_API_KEY",
-    "AIzaSyDdKL4-geM9qex4HpaIpZ8OuOn1RwtwoCI",
 )
 LLM_MODEL = "gemini-2.5-flash"
 
