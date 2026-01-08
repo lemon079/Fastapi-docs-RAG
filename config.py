@@ -1,19 +1,38 @@
 """
 FastAPI RAG Application - Core Configuration
-Centralized configuration for the RAG pipeline.
+Supports both local (.env) and Streamlit Cloud (secrets) deployment.
 """
 
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+# Try to load from .env for local development
+try:
+    from dotenv import load_dotenv
+
+    load_dotenv()
+except ImportError:
+    pass
+
+
+# Try Streamlit secrets first (for cloud), then fall back to env vars
+def get_config(key: str, default: str = None) -> str:
+    """Get config from Streamlit secrets or environment variables."""
+    try:
+        import streamlit as st
+
+        if key in st.secrets:
+            return st.secrets[key]
+    except:
+        pass
+    return os.getenv(key, default)
+
 
 # Pinecone Configuration
-PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-PINECONE_INDEX = os.getenv("PINECONE_INDEX", "fastapi-rag")
+PINECONE_API_KEY = get_config("PINECONE_API_KEY")
+PINECONE_INDEX = get_config("PINECONE_INDEX", "fastapi-rag")
 
 # Model Configuration
-LLM_MODEL = os.getenv("LLM_MODEL", "gpt-oss:20b-cloud")
+LLM_MODEL = get_config("LLM_MODEL", "gpt-oss:20b-cloud")
 EMBEDDING_MODEL = "llama-text-embed-v2"  # Pinecone's inference embedding model
 
 # RAG Configuration
