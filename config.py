@@ -14,7 +14,6 @@ except ImportError:
     pass
 
 
-# Try Streamlit secrets first (for cloud), then fall back to env vars
 def get_config(key: str, default: str = None) -> str:
     """Get config from Streamlit secrets or environment variables."""
     try:
@@ -34,13 +33,15 @@ PINECONE_API_KEY = get_config(
 )
 PINECONE_INDEX = get_config("PINECONE_INDEX", "fastapi-rag")
 
-# Ollama Configuration (for cloud deployment)
-OLLAMA_API_KEY = get_config("OLLAMA_API_KEY")
-OLLAMA_BASE_URL = get_config("OLLAMA_BASE_URL", "http://localhost:11434")
+# Gemini Configuration
+GEMINI_API_KEY = get_config(
+    "GEMINI_API_KEY",
+    "AIzaSyDdKL4-geM9qex4HpaIpZ8OuOn1RwtwoCI",
+)
+LLM_MODEL = "gemini-2.5-flash"
 
-# Model Configuration
-LLM_MODEL = get_config("LLM_MODEL", "gpt-oss:20b-cloud")
-EMBEDDING_MODEL = "llama-text-embed-v2"  # Pinecone's inference embedding model
+# Embedding Model (Pinecone's inference API)
+EMBEDDING_MODEL = "llama-text-embed-v2"
 
 # RAG Configuration
 CHUNK_SIZE = 600

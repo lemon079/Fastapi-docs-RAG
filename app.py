@@ -4,10 +4,10 @@ Simple chat interface for querying FastAPI documentation.
 """
 
 import streamlit as st
-from langchain_ollama import ChatOllama
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.agents import create_agent
 from retriever import retrieve_context
-from config import LLM_MODEL, SYSTEM_PROMPT, OLLAMA_BASE_URL
+from config import LLM_MODEL, SYSTEM_PROMPT, GEMINI_API_KEY
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -126,7 +126,10 @@ if "messages" not in st.session_state:
 @st.cache_resource
 def get_agent():
     """Initialize and cache the RAG agent."""
-    llm = ChatOllama(model=LLM_MODEL, base_url=OLLAMA_BASE_URL)
+    llm = ChatGoogleGenerativeAI(
+        model=LLM_MODEL,
+        google_api_key=GEMINI_API_KEY,
+    )
     return create_agent(llm, [retrieve_context], system_prompt=SYSTEM_PROMPT)
 
 
@@ -165,7 +168,7 @@ st.markdown(
 <div class="hero-section">
     <h1>⚡ FastAPI Docs AI</h1>
     <p>Ask anything about FastAPI — powered by RAG</p>
-    <span class="hero-badge">🚀 Pinecone + LangChain</span>
+    <span class="hero-badge">🚀 Pinecone + Gemini</span>
 </div>
 """,
     unsafe_allow_html=True,
@@ -207,6 +210,23 @@ with col_main:
                     response = ""
                     sources = []
 
+                    def extract_text(content):
+                        """Extract text from Gemini's response format."""
+                        if isinstance(content, str):
+                            return content
+                        if isinstance(content, list):
+                            texts = []
+                            for item in content:
+                                if (
+                                    isinstance(item, dict)
+                                    and item.get("type") == "text"
+                                ):
+                                    texts.append(item.get("text", ""))
+                                elif isinstance(item, str):
+                                    texts.append(item)
+                            return "\n".join(texts)
+                        return str(content) if content else ""
+
                     for event in agent.stream(
                         {"messages": [{"role": "user", "content": prompt}]},
                         stream_mode="values",
@@ -217,7 +237,7 @@ with col_main:
                             if hasattr(msg, "type") and msg.type == "ai":
                                 if hasattr(msg, "content") and msg.content:
                                     if not getattr(msg, "tool_calls", None):
-                                        response = msg.content
+                                        response = extract_text(msg.content)
 
                     if response:
                         st.markdown(response)
